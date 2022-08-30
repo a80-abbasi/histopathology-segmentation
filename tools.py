@@ -1,5 +1,9 @@
+import os
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 from matplotlib import patches
+import shutil
 
 
 def get_rectangle_params_from_pascal_bbox(bbox):
@@ -40,3 +44,20 @@ def show_image(image, bboxes=None, class_labels=None, draw_bboxes_fn=draw_bboxes
         draw_bboxes_fn(ax, bboxes, class_labels)
 
     plt.show()
+
+
+# This function flattens a directory with complex tree of subdirectories into a single directory
+def flatten_folder(folder_path, remove_dirs=True):
+    # convert folder_path to Path if it isn't already
+    if not isinstance(folder_path, Path):
+        folder_path = Path(folder_path)
+    # gather all path of all files in this directory tree
+    all_files = [os.path.join(root, file) for root, _, files in os.walk(folder_path) for file in files if
+                 Path(root) != folder_path]
+    # move files to top level directory
+    for file in all_files:
+        shutil.move(file, folder_path)
+    # remove redundant subdirectories if remove_dirs is True:
+    if remove_dirs:
+        for subdir in [os.path.join(folder_path, directory) for directory in next(os.walk(folder_path))[1]]:
+            shutil.rmtree(subdir)
