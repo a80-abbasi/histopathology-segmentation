@@ -2,7 +2,7 @@
 # MIT License
 
 def calculate_slices(image_shape: tuple[int, int], slice_shape: tuple[int, int] = (512, 512),
-                     overlap_width_ratio: float = 0.2, overlap_height_ratio: float = 0.2, ) -> list[list[int]]:
+                     overlap_width_ratio: float = 0.2, overlap_height_ratio: float = 0.2, ):
     """
     :return: a list of bounding boxes in xyxy format
     """
