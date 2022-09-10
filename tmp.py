@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
-import jellyfish
+
+import matplotlib.pyplot as plt
+from PIL import Image
+Image.MAX_IMAGE_PIXELS = None
 
 # this file is for checking most similar names of masks to missing masks
 
@@ -17,3 +20,6 @@ import jellyfish
 
 images_path = Path('dataset/images')
 print('96-6433-2-20X-0.50 ph1__UPlanF1__Olympus----R1-.tif' in os.listdir(images_path))
+img = Image.open(images_path / '96-6433-2-20X-0.50 ph1__UPlanF1__Olympus----R1-.tif')
+plt.imshow(img)
+plt.show()

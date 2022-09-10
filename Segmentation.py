@@ -77,6 +77,8 @@ masks_path = Path('dataset/masks')
 
 flatten_folder(images_path)
 
+
+from PIL import UnidentifiedImageError
 corrupted_masks = []
 with tqdm.tqdm(os.listdir(images_path), total=len(os.listdir(images_path))) as pbar:
     for image_name in pbar:
@@ -86,16 +88,20 @@ with tqdm.tqdm(os.listdir(images_path), total=len(os.listdir(images_path))) as p
         mask_image_path = masks_path / mask_image_name
         if mask_image_path.exists():
             continue
-        if not mask_path.exists():
-            # no cancer
-            mask = create_empty_mask(image_path)
-        else:
-            try:
+        try:
+            if not mask_path.exists():
+                # no cancer
+                mask = create_empty_mask(image_path)
+            else:
                 mask = create_mask_from_vpa(image_path, mask_path)
-            except Exception as e:
-                print(f'Error creating mask from {mask_path.name}: {str(e)}')
-                corrupted_masks.append(image_name)
-                continue
+        except UnidentifiedImageError as e:
+            print(f'UnidentifiedImageError {mask_path.name}: {str(e)}')
+            corrupted_masks.append(image_name)
+            continue
+        except Exception as e:
+            print(f'Error creating mask from {mask_path.name}: {str(e)}')
+            corrupted_masks.append(image_name)
+            continue
         try:
             mask.save(masks_path / mask_image_name)
         except Exception as e:
