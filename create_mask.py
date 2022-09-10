@@ -33,6 +33,13 @@ def create_mask_from_vpa(image_path, vpa_path) -> Image:
     return Image.fromarray(mask_array * 255, mode='L').convert('1')
 
 
+def create_empty_mask(image_path):
+    image = Image.open(image_path)
+    w, h = image.size
+    mask_array = np.zeros((h, w), np.uint8)
+    return Image.fromarray(mask_array, mode='L').convert('1')
+
+
 if __name__ == '__main__':
     image_name = '96-6433-2-20X-0.50 ph1__UPlanF1__Olympu--L-U-'
     mask = create_mask_from_vpa(f'{image_name}.tif', f'{image_name}.vpa')
