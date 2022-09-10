@@ -102,24 +102,6 @@ with tqdm.tqdm(os.listdir(images_path), total=len(os.listdir(images_path))) as p
             print(f'Error saving mask {mask_path.name}: {str(e)}')
             corrupted_masks.append(image_name)
 
-img = Image.open(images_path / '96-6433-2-20X-0.50 ph1__UPlanF1__Olympus----M1.jpg')
-bboxs = calculate_slices(img.size, (2000, 2000))
-show_image(img, bboxs)
-
-image_names = []
-
-dataset_images = []
-for image_name in set(os.listdir(images_path)).difference(corrupted_masks):
-    img_path = images_path / image_name
-    # skipping images without mask
-    mask_name = f'{img_path.stem}.jpg'
-    mask_path = masks_path / mask_name
-    if not mask_path.exists():
-        continue
-    img = Image.open(img_path)
-    w, h = img.size
-    dataset_images.append({'image_name': image_name, 'w': w, 'h': h})
-
 import pickle
 
 pickle_path = Path('resources/dataset.pickle')
@@ -128,6 +110,18 @@ if pickle_path.exists():
     with open('resources/dataset.pickle', 'rb') as file:
         dataset = pickle.load(file)
 else:
+    dataset_images = []
+    for image_name in set(os.listdir(images_path)).difference(corrupted_masks):
+        img_path = images_path / image_name
+        # skipping images without mask
+        mask_name = f'{img_path.stem}.jpg'
+        mask_path = masks_path / mask_name
+        if not mask_path.exists():
+            continue
+        img = Image.open(img_path)
+        w, h = img.size
+        dataset_images.append({'image_name': image_name, 'w': w, 'h': h})
+
     dataset_df = pd.DataFrame(dataset_images)
     image_name_to_id = {v: i for i, v in enumerate(dataset_df.image_name.unique())}
     image_id_to_name = {i: v for i, v in enumerate(dataset_df.image_name.unique())}
@@ -172,14 +166,14 @@ train_loader = DataLoader(train_set, 64, shuffle=True)
 val_loader = DataLoader(val_set, 64, shuffle=True)
 test_loader = DataLoader(test_set, 64, shuffle=True)
 
-model = models.segmentation.deeplabv3_resnet101(pretrained=True)
+model = models.segmentation.deeplabv3_resnet101(weights=True)
 model.classifier = DeepLabHead(2048, dataset.num_class)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f'device: {device}')
 
-
 import time, tqdm
+
 
 def train(model, train_loader, criterion, optimizer, epoch):
     train_loss = 0
