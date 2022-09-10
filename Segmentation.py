@@ -76,6 +76,7 @@ images_path = Path('dataset/images')
 masks_path = Path('dataset/masks')
 
 flatten_folder(images_path)
+convert_tif_images_to_jpg(images_path, remove_tifs=True)
 
 
 from PIL import UnidentifiedImageError
