@@ -28,13 +28,12 @@ from create_mask import *
 
 class CancerDataset(Dataset):
     def __init__(self, images_path: Path, masks_path: Path, slices_dataframe: pd.DataFrame, image_id_to_name: dict,
-                 transformers=None, image_transformer=None, target_transformer=None, to_tensor=True, num_classes=2):
+                 transformers=None, image_transformer=None, target_transformer=None, to_tensor=True):
         image_transformers = [image_transformer] if image_transformer is not None else []
         target_transformers = [target_transformer] if target_transformer is not None else []
         if to_tensor:
             image_transformers.append(T.ToTensor())
             target_transformers.append(T.ToTensor())
-        self.num_classes = num_classes
         self.image_transformer = T.Compose(image_transformers)
         self.target_transformer = T.Compose(target_transformers)
         self.transformers = transformers
@@ -52,9 +51,10 @@ class CancerDataset(Dataset):
         image_id, w, h, xmin, ymin, xmax, ymax = slice['image_id'], slice['w'], slice['h'], slice['xmin'], slice[
             'ymin'], slice['xmax'], slice['ymax']
         image_name = self.image_id_to_name[image_id]
-
-        image = Image.open(self.images_path / image_name)
-        mask = Image.open(self.masks_path / image_name)
+        image_path = self.images_path / image_name
+        image = Image.open(image_path)
+        mask_path = f'{self.masks_path / image_path.stem}.jpg'
+        mask = Image.open(mask_path)
 
         # crop image:
         image = image.crop((xmin, ymin, xmax, ymax))
