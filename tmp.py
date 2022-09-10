@@ -1,8 +1,11 @@
 import os
 from pathlib import Path
-
+import tifffile
 import matplotlib.pyplot as plt
 from PIL import Image
+
+from create_mask import convert_tif_images_to_jpg
+
 Image.MAX_IMAGE_PIXELS = None
 
 # this file is for checking most similar names of masks to missing masks
@@ -18,8 +21,10 @@ Image.MAX_IMAGE_PIXELS = None
 #     print(name)
 
 
-images_path = Path('dataset/images')
-print('96-6433-2-20X-0.50 ph1__UPlanF1__Olympus----R1-.tif' in os.listdir(images_path))
-img = Image.open(images_path / '96-6433-2-20X-0.50 ph1__UPlanF1__Olympus----R1-.tif')
-plt.imshow(img)
-plt.show()
+# images_path = Path('dataset/images')
+# print('96-6433-2-20X-0.50 ph1__UPlanF1__Olympus----R1-.tif' in os.listdir(images_path))
+#
+# img = tifffile.imread(images_path / '96-6433-2-20X-0.50 ph1__UPlanF1__Olympus----R1-.tif')
+# print(img)
+
+convert_tif_images_to_jpg('.')

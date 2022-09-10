@@ -113,7 +113,7 @@ import pickle
 pickle_path = Path('resources/dataset.pickle')
 if pickle_path.exists():
     # read dataset object from file:
-    with open('resources/dataset.pickle', 'rb') as file:
+    with open(pickle_path, 'rb') as file:
         dataset = pickle.load(file)
 else:
     dataset_images = []

@@ -1,8 +1,12 @@
+import os
+from pathlib import Path
+
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import xmltodict
 from PIL import Image
+import tifffile
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -38,6 +42,21 @@ def create_empty_mask(image_path):
     w, h = image.size
     mask_array = np.zeros((h, w), np.uint8)
     return Image.fromarray(mask_array, mode='L').convert('1')
+
+
+def convert_tif_images_to_jpg(directory, remove_tifs=True):
+    if not isinstance(directory, Path):
+        directory = Path(directory)
+    tiffs = []
+    for file_name in os.listdir(directory):
+        if file_name.endswith('.tif') or file_name.endswith('.tiff'):
+            tiffs.append(file_name)
+
+            image_path = directory / file_name
+            img_array = tifffile.imread(image_path)
+            img = Image.fromarray(img_array).convert('RGB')
+            img.save(directory / f'{image_path.stem}.jpg')
+            os.remove(image_path)
 
 
 if __name__ == '__main__':
