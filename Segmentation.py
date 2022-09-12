@@ -28,7 +28,7 @@ from create_mask import *
 
 class CancerDataset(Dataset):
     def __init__(self, images_path: Path, masks_path: Path, slices_dataframe: pd.DataFrame, image_id_to_name: dict,
-                 transformers=None, image_transformer=None, target_transformer=None, to_tensor=True):
+                 transformers=None, image_transformer=None, target_transformer=None, to_tensor=True, num_classes=2):
         image_transformers = [image_transformer] if image_transformer is not None else []
         target_transformers = [target_transformer] if target_transformer is not None else []
         if to_tensor:
@@ -41,6 +41,7 @@ class CancerDataset(Dataset):
         self.slices_dataframe = slices_dataframe
         self.masks_path = masks_path
         self.images_path = images_path
+        self.num_classes = num_classes
         Image.MAX_IMAGE_PIXELS = None
 
     def __len__(self):

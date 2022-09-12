@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import cv2
+import matplotlib.image
 import matplotlib.pyplot as plt
 import numpy as np
 import xmltodict
@@ -54,8 +55,9 @@ def convert_tif_images_to_jpg(directory, remove_tifs=True):
 
             image_path = directory / file_name
             img_array = tifffile.imread(image_path)
-            img = Image.fromarray(img_array).convert('RGB')
-            img.save(directory / f'{image_path.stem}.jpg')
+            # img = Image.fromarray(img_array).convert('RGB')
+            # img.save(directory / f'{image_path.stem}.jpg')
+            matplotlib.image.imsave(directory / f'{image_path.stem}.jpg', img_array)
             os.remove(image_path)
 
 
