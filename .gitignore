@@ -3,3 +3,8 @@
 *.jpg
 *.vpa
 *.tif
+/__pycache__/
+/.idea/
+/.ipynb_checkpoints/
+Segmentation.py
+Segmentation.txt
